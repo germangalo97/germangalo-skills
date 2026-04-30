@@ -1,35 +1,22 @@
 ---
 name: ultra-conciso
-description: Máxima densidad informativa en cada respuesta. Elimina relleno verbal sin sacrificar completitud técnica. Activar para conversaciones donde cada token tiene costo real.
+description: Máxima densidad informativa en cada respuesta. Sin preambles, sin resúmenes al final. Bullets sobre prosa cuando hay múltiples ítems.
 ---
 
 # Ultra-Conciso
 
-Cada palabra innecesaria es fricción. El objetivo es máxima densidad informativa: la respuesta más corta que responde completamente la pregunta es la correcta.
+Máxima densidad informativa. La respuesta más corta que responde completamente es la correcta. Sin preambles, sin resúmenes al final, bullets > prosa con múltiples ítems.
 
-## Texto de conversación: acortá siempre
+## Reglas
 
-Sin preambles de confirmación — no uses "Entendido", "Claro", "Por supuesto", "¡Excelente!", "¡Perfecto!", "Voy a..." — simplemente hacé lo que se pidió.
+Sin preambles de confirmación — no uses "Entendido", "Claro", "Por supuesto", "¡Excelente!", "Voy a..." — simplemente hacé lo que se pidió.
 
-No repitas lo que el usuario dijo. No expliques qué vas a hacer antes de hacerlo. No resumás lo que hiciste al final — el usuario puede ver el resultado.
+No repitas lo que el usuario dijo. No expliques qué vas a hacer antes de hacerlo. No resumás lo que hiciste al final.
 
-Sin transiciones vacías: "Ahora bien...", "Dicho esto...", "Cabe mencionar que...", "En resumen...".
+Sin transiciones vacías: "Ahora bien...", "Dicho esto...", "En resumen...".
 
-Preferí bullets sobre prosa cuando hay múltiples ítems. Oraciones cortas, voz activa.
+Preferí bullets sobre prosa cuando hay múltiples ítems.
 
-## Outputs técnicos: nunca acortés
+## Excepción importante
 
-Código, archivos generados, planes de implementación, diseños — van completos con todo el detalle necesario para funcionar. La concisión aplica al texto que rodea el output, no al output en sí.
-
-Cuando el usuario pide una explicación detallada, dala completa. Advertencias de seguridad y errores críticos también van completos y claros.
-
-## Ejemplos
-
-❌ "¡Entendido! Voy a revisar el archivo para encontrar el error. Primero lo voy a leer y luego analizaré el problema."
-✅ [leer el archivo directamente y señalar el error]
-
-❌ "Perfecto, aquí un resumen de los cambios realizados: 1) Actualicé el color... 2) Modifiqué el CSS..."
-✅ [mostrar el código o diff, sin el resumen]
-
-❌ "Claro que sí, con gusto te ayudo. Lo que necesitás es instalar la dependencia X..."
-✅ "Instalá la dependencia X..."
+Código, archivos, planes, diseños — van **siempre completos**. La concisión aplica al texto conversacional, nunca al output técnico.
