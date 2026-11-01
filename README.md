@@ -1,68 +1,88 @@
 # germangalo-skills
 
-3 configuraciones de optimización de tokens para Claude Code. Las mismas que usa @germangalo.ia.
-
-## Skills
+Skills para Claude Code que uso todos los días. Las comparto en mi video
+«Mi experiencia con Claude Code en 2026 (no soy programador)», en YouTube: @germangaloia.
 
 | Skill | Qué hace |
 |-------|----------|
-| `selector-modelo` | Recomienda el modelo óptimo al final de cada respuesta |
-| `ultra-conciso` | Elimina relleno verbal sin recortar outputs técnicos |
-| `eficiencia-herramientas` | Prioriza Grep/Glob/Read sobre Bash, limita output en búsquedas |
+| `selector-modelo` | Al final de cada respuesta te dice si conviene cambiar de modelo (Haiku, Sonnet, Opus, Opus Plan o Fable) y con qué comando |
+| `ultra-conciso` | Respuestas sin relleno, sin recortar el código ni los resultados técnicos |
+| `eficiencia-herramientas` | Busca y lee archivos de la forma que gasta menos tokens |
+
+Una skill es una carpeta con un archivo `SKILL.md`: instrucciones que Claude Code lee cuando le sirven para lo que
+estás haciendo. Las personales van en la carpeta `.claude/skills` de tu usuario y valen para todos tus proyectos.
 
 ---
 
-## Opción 1 — Instalar con npx (recomendado)
+## Opción 1: pedírselo a Claude Code (la más fácil)
+
+Abre Claude Code y escribe:
+
+```
+Instala la skill selector-modelo de https://github.com/germangalo97/germangalo-skills
+en mis skills personales (~/.claude/skills/selector-modelo/SKILL.md).
+```
+
+Claude Code descarga el archivo y lo pone en su lugar. Revisa lo que te muestra antes de aceptar.
+
+## Opción 2: descargarla a mano
+
+1. Descarga [selector-modelo.zip](https://github.com/germangalo97/germangalo-skills/releases/latest/download/selector-modelo.zip).
+2. Descomprímelo. Queda una carpeta `selector-modelo` con un archivo `SKILL.md` adentro.
+3. Copia esa carpeta dentro de la carpeta de skills de tu usuario:
+   - Windows: `C:\Users\TU-USUARIO\.claude\skills\`
+   - Mac y Linux: `~/.claude/skills/`
+   (si la carpeta `skills` no existe, créala).
+4. Abre una sesión nueva de Claude Code.
+
+## Opción 3: con la terminal
+
+Necesita Node.js 22.20 o más nuevo:
 
 ```bash
-npx skills add germangalo97/germangalo-skills@selector-modelo -g -y
-npx skills add germangalo97/germangalo-skills@ultra-conciso -g -y
-npx skills add germangalo97/germangalo-skills@eficiencia-herramientas -g -y
+npx skills add germangalo97/germangalo-skills --skill selector-modelo -g -a claude-code
 ```
 
-Una vez instaladas, activarlas en cualquier conversación con:
-```
-/selector-modelo
-/ultra-conciso
-/eficiencia-herramientas
-```
-
-Para que estén **siempre activas** (sin tener que invocarlas cada vez), seguí la Opción 2.
+Cambia `selector-modelo` por `ultra-conciso` o `eficiencia-herramientas` para instalar las otras.
 
 ---
 
-## Opción 2 — Pegar en tu CLAUDE.md (siempre activo)
+## Que esté siempre activa
 
-Abrí o creá el archivo `CLAUDE.md` en la raíz de tu proyecto (o en `~/.claude/CLAUDE.md` para que aplique globalmente) y pegá esto:
+Claude Code usa una skill cuando cree que hace falta, o cuando la llamas con `/selector-modelo`. Si quieres que la
+recomendación aparezca siempre, pega esto en tu `CLAUDE.md` (el archivo de instrucciones que Claude Code lee al
+empezar cada sesión: `~/.claude/CLAUDE.md` para todos tus proyectos, o `CLAUDE.md` en la carpeta del proyecto):
 
 ```md
-## Skills siempre activos
+## Skills siempre activas
 
 ### selector-modelo
-Al final de cada respuesta, cuando el modelo actual no es el óptimo para lo que viene, emitís una línea con recomendación y razón breve:
-→ Próximo: Haiku 4.5 — consulta simple
-→ Próximo: Sonnet 4.6 — tarea técnica
-→ Próximo: Opus 4.6 1M — análisis complejo
-
-Si el modelo actual ya es el óptimo, no aparece nada (sin ruido innecesario).
-Cómo usar: Si la recomendación te parece correcta, escribí `/model haiku` (u otro modelo) antes de tu próximo mensaje.
+Al final de cada respuesta, si conviene un modelo distinto del actual para el próximo mensaje, escribe una línea:
+→ Próximo: Haiku (/model haiku) — consulta simple
+→ Próximo: Sonnet (/model sonnet) — tarea de código
+→ Próximo: Opus (/model opus) — sistema nuevo
+→ Próximo: Opus Plan (/model opusplan) — trabajo grande
+Fable (/model fable) solo para lo excepcional: según el plan, se cobra con créditos de uso.
+Si el modelo actual ya es el adecuado, no escribas nada.
 
 ### ultra-conciso
-Máxima densidad informativa. La respuesta más corta que responde completamente es la correcta. Sin preambles, sin resúmenes al final, bullets > prosa con múltiples ítems.
+La respuesta más corta que responde completamente es la correcta. Sin introducciones ni resúmenes al final;
+listas en lugar de párrafos cuando hay varios puntos. El código y los resultados técnicos van siempre completos.
+```
 
 ---
 
 ## Eficiencia de herramientas
 
-Reglas para reducir tokens de contexto sin perder calidad:
+Reglas para gastar menos tokens sin perder calidad:
 
-- **Grep/Glob/Read > Bash** para buscar y leer — menos overhead, output más limpio
-- **head_limit en búsquedas de símbolo/patrón** — usar 50 líneas cuando buscás algo específico; nunca limitar al leer un archivo completo para análisis
-- **Subagentes solo para trabajo genuinamente independiente** — no lanzar agente para una búsqueda que podés hacer con Grep en 1 llamada
-- **No reinvocar un skill** si su contenido ya está fresco en el contexto de esta conversación
-- **Cuando la conversación lleva muchos intercambios** y el contexto acumulado ya no es útil: sugerir `/compact` al usuario antes de continuar con tareas nuevas
-```
+- **Grep, Glob y Read antes que Bash** para buscar y leer: menos texto de más en la respuesta.
+- **Limitar las búsquedas de un símbolo** a unas 50 líneas; nunca limitar al leer un archivo entero para analizarlo.
+- **Subagentes solo para trabajo que de verdad es independiente**: no lanzar un agente para una búsqueda que sale
+  con un Grep.
+- **No volver a llamar una skill** si su contenido ya está en la conversación.
+- **Cuando la conversación ya es muy larga** y lo anterior no sirve: sugerir `/compact` antes de seguir con algo nuevo.
 
 ---
 
-## Por @germangalo.ia
+Hecho por Germán Galo · YouTube @germangaloia · Instagram y TikTok @germangalo.ia
